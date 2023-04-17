@@ -1,13 +1,15 @@
-from django.urls import path, include
-from rest_framework_simplejwt.views import TokenRefreshView
+from django.urls import path, include, re_path
+from rest_framework import routers
+from rest_framework_simplejwt.views import TokenRefreshView, TokenBlacklistView
 
 from users.views import LoginView, RegisterView
 
+router = routers.DefaultRouter()
+
 urlpatterns = [
-    path('', include('rest_framework.urls')),
+    re_path(r'^login/', LoginView.as_view(), name='auth_login'),
+    re_path(r'^login/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    re_path(r'^register/', RegisterView.as_view(), name='auth_register'),
 
-    path(r'^login/', LoginView.as_view(), name='auth_login'),
-    path(r'^register/', RegisterView.as_view(), name='auth_register'),
-    path(r'^login/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-
+    path('', include(router.urls)),
 ]
